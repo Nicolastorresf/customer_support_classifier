@@ -64,7 +64,7 @@ nequi_ml_challenge/
 
 *(Se documentarán aquí las decisiones clave tomadas durante el proyecto)*
 
-## Esbozo Arquitectónico Inicial (Alto Nivel)
+## Esbozo Arquitectónico Inicial 
 
 El flujo general de la solución batch propuesta es el siguiente:
 
