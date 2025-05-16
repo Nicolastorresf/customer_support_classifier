@@ -63,3 +63,36 @@ nequi_ml_challenge/
 ## Decisiones de Diseño y Justificaciones
 
 *(Se documentarán aquí las decisiones clave tomadas durante el proyecto)*
+
+## Esbozo Arquitectónico Inicial (Alto Nivel)
+
+El flujo general de la solución batch propuesta es el siguiente:
+
+1.  **Fuente de Datos:**
+    * Nuevos mensajes de usuarios (simulados como archivos CSV o JSON) llegan periódicamente a una ubicación designada (ej. un bucket S3).
+2.  **Ingesta de Datos:**
+    * Un proceso automatizado detecta la llegada de nuevos datos.
+    * Los datos son cargados y validados inicialmente.
+3.  **Preprocesamiento de Datos:**
+    * Limpieza de texto (normalización, eliminación de ruido como URLs, menciones, caracteres especiales, stopwords).
+    * Lematización/Stemming (a decidir y justificar).
+    * Vectorización (TF-IDF como baseline).
+4.  **Inferencia Batch del Modelo:**
+    * Se carga la última versión productiva del modelo de clasificación y el vectorizador.
+    * Se realizan predicciones (asignación de categorías) sobre los datos preprocesados.
+5.  **Almacenamiento de Resultados:**
+    * Los mensajes clasificados, junto con sus categorías predichas y posiblemente scores de confianza, se almacenan en una ubicación designada (ej. otro bucket S3, una tabla en DynamoDB, o enviados a una cola SQS).
+6.  **Orquestación:**
+    * Todo el pipeline (desde la ingesta hasta el almacenamiento de resultados) es gestionado por un orquestador (ej. AWS Step Functions o Apache Airflow) que asegura la ejecución secuencial, el manejo de errores y reintentos.
+7.  **Versionamiento (MLOps):**
+    * **Código:** Versionado en Git.
+    * **Datos:** Versionados (o con linaje claro), posiblemente con DVC o identificadores en S3.
+    * **Modelos:** Modelos entrenados y sus artefactos (vectorizador) son versionados (ej. en un Model Registry de SageMaker o con un esquema de nombrado en S3).
+8.  **Monitoreo (Propuesta):**
+    * Métricas operativas del pipeline (éxito/fallo de jobs, latencia).
+    * Métricas de calidad de datos (data drift).
+    * Métricas de rendimiento del modelo (si hay retroalimentación o datos etiquetados).
+9.  **Reentrenamiento del Modelo (Proceso Separado pero Relacionado):**
+    * Un pipeline de reentrenamiento se activa periódicamente o por detección de degradación del modelo/data drift.
+    * Utiliza datos frescos (y posiblemente re-etiquetados) para entrenar una nueva versión del modelo.
+    * El nuevo modelo se evalúa y, si es superior, se promueve a producción para ser usado por el pipeline de inferencia batch.

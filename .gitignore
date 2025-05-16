@@ -1,0 +1,39 @@
+# Entornos virtuales
+venv/
+env/
+.env
+*.pyenv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Datos grandes (si no usas DVC o similar para versionarlos)
+# Considera si los datos crudos o procesados muy grandes deben estar aquí
+# data/raw/*.csv 
+# data/processed/*.parquet
+# models/*.pkl
+# models/*.joblib
+
+# Archivos de logs
+*.log
+
+# Archivos de dependencias descargadas (si aplica, aunque se suelen gestionar con requirements.txt)
+# dist/
+# build/
+# *.egg-info/
+
+# Reportes generados localmente (si son grandes o temporales)
+# reports/temp/
